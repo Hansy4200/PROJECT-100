@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - RENT MY GUARDIAN</title>
+    <style>
+        /* Fix: Properly define the font import first before any other styles */
+        @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            background-color: #f8f8f8;
+        }
+
+        .header-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            width: 95%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo img {
+            margin-right: 10px;
+            height: 50px;
+            width: auto;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            position: relative;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            display: block;
+            padding: 10px;
+            font-size: 16px; /* Fix: Consistent font size for navigation */
+        }
+
+        /* Hover Effect Fix */
+        nav a:hover {
+            color: #56684c;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ddd;
+            display: none;
+            flex-direction: column;
+            min-width: 150px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .dropdown a {
+            padding: 10px;
+            text-align: left;
+            color: #333;
+            text-decoration: none;
+            display: block;
+            white-space: nowrap;
+        }
+
+        .dropdown a:hover {
+            background: #f4f4f4;
+        }
+
+        nav ul li:hover .dropdown {
+            display: flex;
+        }
+
+        .about-section {
+            max-width: 900px;
+            margin: 140px auto 50px;
+            background: #fff;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-section h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .about-section p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Footer Styles */
+        footer.footer-container {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #fff;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .footer-links {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .footer-links a:hover {
+            color: #869F77;
+        }
+        
+        .copyright {
+            font-size: 14px;
+        }
+
+        /* Rent Now Button Styling */
+        .top-header {
+            font-size: 18px;
+            color: #fff;
+            background: #869F77;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        .top-header a:hover {
+            color: #ddd;
+        }
+
+        .rent-now-button {
+            background-color: #869F77;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .rent-now-button:hover {
+            background-color: #6e8563;
+        }
+
+        .rent-now-button:focus {
+            outline: none;
+            border: none;
+        }
+
+        /* Fix: Move media queries to the end */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero {
+                height: 50vh;
+                margin-top: 100px;
+            }
+
+            .hero-text {
+                bottom: 20px;
+                left: 20px;
+                padding: 15px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            nav ul li {
+                width: 100%;
+            }
+
+            .collections {
+                flex-direction: column;
+            }
+
+            .collection {
+                flex: 1 1 100%;
+                margin: 10px 0;
+            }
+
+            .popup {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header with Rent Now for Free -->
+    <div class="header-container" id="headerContainer">
+        <header>
+            <div class="logo">
+                <img src="images/logo.jpeg" alt="Logo">
+                <span>RENT MY GUARDIAN</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href='index.html'>Home</a></li>
+                    <li><a href='RENTED.html'>Rent</a></li>
+                    <li><a href='ABOUT.html'>About</a></li>
+                    <li><a href='CONTACT.html'>Contact</a></li>
+                    <li>
+                        <a href="#">Account ▼</a>
+                        <div class="dropdown">
+                            <a href='PROFILE.html'>Profile</a>
+                            <a href='LOGIN.html'>Sign Out</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div class="top-header">
+            <a href="RENTING.html" class="rent-now-button">RENT NOW FOR FREE</a>
+        </div>
+    </div>
+
+    <section class="about-section">
+        <h1>About RENT MY GUARDIAN</h1>
+        <p>RENT MY GUARDIAN is a unique service dedicated to helping individuals connect with trusted guardians for support and guidance. Whether you need a mentor, a temporary guardian, or a caring figure in your life, our platform ensures safety, trust, and meaningful connections. Join us in redefining modern guardianship.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-container">
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="ABOUT.html">About</a>
+            <a href="CONTACT.html">Contact</a>
+            <a href="RENTING.html">Find Guardian</a>
+            <a href="PROFILE.html">Profile</a>
+            <a href="LOGIN.html">Login</a>
+        </div>
+        <p class="copyright">&copy; 2025 RENT MY GUARDIAN. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

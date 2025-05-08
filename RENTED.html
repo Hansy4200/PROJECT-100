@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rented Guardians - Rent My Guardian</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(to bottom, #869F77, #56684c);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: #869F77;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      color: white;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+
+    .sidebar .logo {
+      font-size: 22px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar .logo img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    .sidebar a.active {
+      background-color: rgba(255,255,255,0.3);
+      font-weight: bold;
+    }
+
+    .rented-container {
+      display: flex;
+      flex: 1;
+      height: 100vh;
+    }
+
+    .rented-list {
+      width: 300px;
+      background-color: #fff;
+      padding: 20px;
+      border-right: 1px solid #ddd;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      overflow-y: auto;
+    }
+
+    .rented-list h2 {
+      margin-top: 0;
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #444;
+    }
+
+    .rented-item {
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-radius: 8px;
+    }
+
+    .rented-item:hover {
+      background-color: #f0f4e8;
+    }
+
+    .chat-area {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    .chat-area h3 {
+      margin-top: 0;
+      color: #444;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    #chatMessages {
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      padding: 10px;
+    }
+
+    .message {
+      background-color: #e0f7fa;
+      padding: 12px;
+      border-radius: 18px;
+      margin-bottom: 15px;
+      word-break: break-word;
+      max-width: 80%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .message.user {
+      background-color: #8EC0A6;
+      color: white;
+      align-self: flex-end;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message:not(.user) {
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-placeholder {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    .chat-placeholder img {
+      width: 80px;
+      margin-bottom: 20px;
+      opacity: 0.6;
+    }
+
+    .chat-placeholder h3 {
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    .chat-placeholder p {
+      color: #777;
+      text-align: center;
+    }
+
+    #quickOptions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    #quickOptions button {
+      background-color: #8EC0A6;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    #quickOptions button:hover {
+      background-color: #76a893;
+      transform: translateY(-2px);
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+      z-index: 1000;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    
+    .toast.show {
+      opacity: 1;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        padding: 10px;
+        overflow-x: auto;
+        position: fixed;
+        top: 0;
+        z-index: 100;
+      }
+      
+      .sidebar .logo {
+        display: none;
+      }
+      
+      .sidebar a {
+        font-size: 16px;
+        padding: 8px;
+        min-width: 80px;
+        text-align: center;
+        justify-content: center;
+      }
+      
+      .rented-container {
+        margin-top: 60px;
+        height: calc(100vh - 60px);
+        flex-direction: column;
+      }
+      
+      .rented-list {
+        width: 100%;
+        height: auto;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+      }
+      
+      .chat-area, .chat-placeholder {
+        height: 60vh;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .message {
+        max-width: 90%;
+      }
+      
+      #quickOptions button {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <img src="images/logo.jpeg" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M12 8v8\'/><path d=\'M8 12h8\'/></svg>'">
+      RENT MY GUARDIAN
+    </div>
+    <a href="index.html.html">Home</a>
+    <a href="RENTED.html" class="active">Rented</a>
+    <a href="PROFILE.html">Profile</a>
+    <a href="RENTING.html">Renting</a>
+  </div>
+
+  <div class="rented-container">
+    <div class="rented-list">
+      <h2>Your Rented Guardians</h2>
+      <ul id="rentedGuardianList" style="list-style: none; padding: 0;"></ul>
+    </div>
+    <div id="chatSection" class="chat-placeholder">
+      <img 
+        src="images/chat.png" 
+        alt="Select a guardian to start chatting"
+        onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23869F77\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><path d=\'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\'/></svg>'"
+      />
+      <h3>Select a guardian to chat with</h3>
+      <p>Click on a name in the list to start a conversation.</p>
+    </div>
+    
+    <div id="activeChatArea" class="chat-area">
+      <h3 id="activeGuardianName"></h3>
+      <div id="chatMessages"></div>
+
+      <!-- Quick Options -->
+      <div id="quickOptions"></div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast">Message sent!</div>
+
+  <script>
+    // Initialize elements
+    const rentedGuardianList = document.getElementById("rentedGuardianList");
+    const likedGuardians = JSON.parse(localStorage.getItem('likedGuardians')) || [];
+    const chatSection = document.getElementById("chatSection");
+    const activeChatArea = document.getElementById("activeChatArea");
+    const activeGuardianNameElement = document.getElementById("activeGuardianName");
+    const chatMessagesElement = document.getElementById("chatMessages");
+    const quickOptionsDiv = document.getElementById("quickOptions");
+    const toast = document.getElementById("toast");
+    let currentChattingGuardian = null;
+
+    // Add default guardians if none exist
+    if (likedGuardians.length === 0) {
+      const defaultGuardians = ['Sarah', 'Jackson', 'Emily'];
+      defaultGuardians.forEach(guardian => likedGuardians.push(guardian));
+      localStorage.setItem('likedGuardians', JSON.stringify(likedGuardians));
+    }
+
+    // Toast notification function
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Populate rented guardians list
+    function populateGuardianList() {
+      rentedGuardianList.innerHTML = '';
+      
+      if (likedGuardians.length === 0) {
+        rentedGuardianList.innerHTML = "<li style='padding: 15px; color: #777;'>No guardians rented yet. Find some on the Purchase page!</li>";
+      } else {
+        likedGuardians.forEach(guardianName => {
+          const listItem = document.createElement('li');
+          listItem.classList.add('rented-item');
+          listItem.textContent = guardianName;
+          listItem.addEventListener('click', () => openChat(guardianName));
+          rentedGuardianList.appendChild(listItem);
+        });
+      }
+    }
+
+    // Open chat with selected guardian
+    function openChat(guardianName) {
+      currentChattingGuardian = guardianName;
+      activeGuardianNameElement.textContent = guardianName;
+      chatSection.style.display = "none";
+      activeChatArea.style.display = "flex";
+      chatMessagesElement.innerHTML = "";
+      quickOptionsDiv.innerHTML = "";
+
+      setTimeout(() => {
+        displayMessage(`Hello there! I'm ${guardianName}. How can I help you today?`, 'guardian');
+        showQuickOptions([
+          "Can you send me the location later?",
+          "I want to pay and rent you",
+          "How long will you be available?",
+          "Do you have any references?",
+          "I have a few questions about your services"
+        ]);
+      }, 500);
+    }
+
+    // Display message in chat
+    function displayMessage(message, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message');
+      if (sender === 'user') {
+        messageDiv.classList.add('user');
+        messageDiv.textContent = "You: " + message;
+      } else if (sender === 'guardian') {
+        messageDiv.textContent = currentChattingGuardian + ": " + message;
+      }
+      chatMessagesElement.appendChild(messageDiv);
+      chatMessagesElement.scrollTop = chatMessagesElement.scrollHeight;
+    }
+
+    // Show quick reply options
+    function showQuickOptions(options) {
+      quickOptionsDiv.innerHTML = "";
+      options.forEach(optionText => {
+        const button = document.createElement("button");
+        button.textContent = optionText;
+        button.onclick = () => {
+          displayMessage(optionText, 'user');
+          showToast("Message sent!");
+          quickOptionsDiv.innerHTML = "";
+          
+          // Handle different user options
+          if (optionText === "I want to pay and rent you") {
+            setTimeout(() => {
+              displayMessage("Great! Let's move forward with payment details.", 'guardian');
+              showPaymentOptions();
+            }, 1000);
+          } else if (optionText === "Can you send me the location later?") {
+            setTimeout(() => {
+              displayMessage("Sure, I'll send it over soon. What time would work best for you?", 'guardian');
+              showUserResponseOptions();
+            }, 1000);
+          } else if (optionText === "How long will you be available?") {
+            setTimeout(() => {
+              displayMessage("I am available for a few hours today and most of tomorrow. What time works for you?", 'guardian');
+              showUserResponseOptions();
+            }, 1000);
+          } else if (optionText === "Do you have any references?") {
+            setTimeout(() => {
+              displayMessage("Yes, I have several references from previous clients. Would you like me to share their contact information?", 'guardian');
+              showUserResponseOptions();
+            }, 1000);
+          } else if (optionText === "I have a few questions about your services") {
+            setTimeout(() => {
+              displayMessage("Of course! I'm happy to answer any questions you might have. What would you like to know?", 'guardian');
+              showUserResponseOptions();
+            }, 1000);
+          }
+        };
+        quickOptionsDiv.appendChild(button);
+      });
+    }
+
+    // Show user response options
+    function showUserResponseOptions() {
+      const userResponses = [
+        "Can you send me more details about your background?",
+        "I need to think about it. Can we talk later?",
+        "I'm happy to proceed. Let's get this started!",
+        "Do you have any available slots next week?"
+      ];
+
+      userResponses.forEach(response => {
+        const button = document.createElement("button");
+        button.textContent = response;
+        button.onclick = () => {
+          displayMessage(response, 'user');
+          showToast("Message sent!");
+          quickOptionsDiv.innerHTML = "";
+          setTimeout(() => {
+            displayMessage("Sure! I'll get back to you shortly with more information.", 'guardian');
+            
+            // Show more options after a delay
+            setTimeout(() => {
+              showFinalOptions();
+            }, 1000);
+          }, 1000);
+        };
+        quickOptionsDiv.appendChild(button);
+      });
+    }
+
+    // Show final options
+    function showFinalOptions() {
+      const finalOptions = [
+        "Thanks for your help!",
+        "I'll check my schedule and get back to you",
+        "Let's finalize the details"
+      ];
+      
+      finalOptions.forEach(option => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.onclick = () => {
+          displayMessage(option, 'user');
+          showToast("Message sent!");
+          quickOptionsDiv.innerHTML = "";
+          
+          setTimeout(() => {
+            if (option === "Let's finalize the details") {
+              displayMessage("Perfect! I'll prepare everything. Would you like to proceed with payment now?", 'guardian');
+              showPaymentOptions();
+            } else {
+              displayMessage("Great! I'm looking forward to working with you. Let me know if you need anything else.", 'guardian');
+            }
+          }, 1000);
+        };
+        quickOptionsDiv.appendChild(button);
+      });
+    }
+
+    // Show payment options
+    function showPaymentOptions() {
+      quickOptionsDiv.innerHTML = "";
+      const paymentButton = document.createElement("button");
+      paymentButton.textContent = "Proceed with payment";
+      paymentButton.onclick = () => {
+        displayMessage("I'd like to proceed with payment now.", 'user');
+        showToast("Payment request sent!");
+        quickOptionsDiv.innerHTML = "";
+        setTimeout(() => {
+          displayMessage("Payment successful! Thank you for renting. I'll be in touch soon with all the details.", 'guardian');
+        }, 1000);
+      };
+      quickOptionsDiv.appendChild(paymentButton);
+      
+      const laterButton = document.createElement("button");
+      laterButton.textContent = "I'll pay later";
+      laterButton.onclick = () => {
+        displayMessage("I'll handle the payment a bit later.", 'user');
+        showToast("Message sent!");
+        quickOptionsDiv.innerHTML = "";
+        setTimeout(() => {
+          displayMessage("No problem! Just let me know when you're ready to proceed.", 'guardian');
+        }, 1000);
+      };
+      quickOptionsDiv.appendChild(laterButton);
+    }
+
+    // Initialize the app
+    window.addEventListener('DOMContentLoaded', () => {
+      populateGuardianList();
+    });
+  </script>
+</body>
+</html>
