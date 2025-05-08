@@ -1,1 +1,1 @@
-git add images/logo.jpeg
+git add images/.jpeg
